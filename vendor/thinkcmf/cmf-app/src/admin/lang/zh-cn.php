@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkCMF [ WE CAN DO IT MORE SIMPLE ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2013-2019 http://www.thinkcmf.com All rights reserved.
+// | Copyright (c) 2013-present http://www.thinkcmf.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -94,6 +94,7 @@ return [
     "ENABLE_UCENTER"                     => '开启UCenter',
     "COMMENT_CHECK"                      => '评论审核',
     "COMMENT_TIME_INTERVAL"              => "评论时间间隔",
+    'SECONDS'                            => '秒',
     "SPECAIL_USERNAME"                   => '特殊用户名',
     "WEBSITE_SITE_NAME_REQUIRED_MESSAGE" => "请输入网站名称！",
     "WEBSITE_SITE_HOST_REQUIRED_MESSAGE" => "请输入网站域名！",

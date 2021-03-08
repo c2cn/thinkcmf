@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkCMF [ WE CAN DO IT MORE SIMPLE ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2013-2019 http://www.thinkcmf.com All rights reserved.
+// | Copyright (c) 2013-present http://www.thinkcmf.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -13,7 +13,7 @@ namespace app\admin\controller;
 use app\admin\model\RecycleBinModel;
 use app\admin\model\RouteModel;
 use cmf\controller\AdminBaseController;
-use think\Db;
+use think\facade\Db;
 use think\Exception;
 use think\exception\PDOException;
 
@@ -40,13 +40,12 @@ class RecycleBinController extends AdminBaseController
             return $content;
         }
 
+        $recycleBinModel = new RecycleBinModel();
+        $list            = $recycleBinModel->order('create_time desc')->paginate(10);
         // 获取分页显示
-        $list = (new RecycleBinModel())->order('create_time desc')->paginate(20);
-
-        $this->assign([
-            'list' => $list,
-            'page' => $list->render()
-        ]);
+        $page = $list->render();
+        $this->assign('page', $page);
+        $this->assign('list', $list);
         return $this->fetch();
     }
 
@@ -65,8 +64,14 @@ class RecycleBinController extends AdminBaseController
      */
     public function restore()
     {
-        $this->operate($this->request->param('ids'), false);
-        $this->success('还原成功');
+        if ($this->request->isPost()) {
+            $ids = $this->request->param('ids');
+            if (empty($ids)) {
+                $ids = $this->request->param('id');
+            }
+            $this->operate($ids, false);
+            $this->success('还原成功');
+        }
     }
 
     /**
@@ -84,8 +89,14 @@ class RecycleBinController extends AdminBaseController
      */
     public function delete()
     {
-        $this->operate($this->request->param('ids'));
-        $this->success('删除成功');
+        if ($this->request->isPost()) {
+            $ids = $this->request->param('ids');
+            if (empty($ids)) {
+                $ids = $this->request->param('id');
+            }
+            $this->operate($ids);
+            $this->success('删除成功');
+        }
     }
 
     /**
@@ -103,8 +114,10 @@ class RecycleBinController extends AdminBaseController
      */
     public function clear()
     {
-        $this->operate(null);
-        $this->success('回收站已清空');
+        if ($this->request->isPost()) {
+            $this->operate(null);
+            $this->success('回收站已清空');
+        }
     }
 
     /**
@@ -114,6 +127,9 @@ class RecycleBinController extends AdminBaseController
      */
     private function operate($ids, $isDelete = true)
     {
+        if (!empty($ids) && !is_array($ids)) {
+            $ids = [$ids];
+        }
         $records = RecycleBinModel::all($ids);
 
         if ($records) {
